@@ -1,12 +1,12 @@
 package main
 
 import (
-	//	"batu/demo" //注意导入Thrift生成的接口包
+	"batu/demo" //注意导入Thrift生成的接口包
 	"fmt"
 	"git.apache.org/thrift.git/lib/go/thrift"
-	"github.com/redfox241/supergo/libs"
+	//"github.com/redfox241/supergo/libs"
 	"os"
-	//	"time"
+	"time"
 )
 
 const (
@@ -16,31 +16,34 @@ const (
 type batuThrift struct {
 }
 
-//func (this *batuThrift) GetUserInfo(callTime int64, name string, paramMap map[string]string) (r []string, err error) {
-//	fmt.Println("-->from client Call:", time.Unix(callTime, 0).Format("2006-01-02 15:04:05"), name, paramMap)
-//	for k, v := range paramMap {
-//		r = append(r, "key:"+k+"  value:"+v+"  ")
-//	}
-//	return
-//}
+func (this *batuThrift) GetUserInfo(callTime int64, name string, paramMap map[string]string) (r []string, err error) {
+	fmt.Println("-->from client Call:", time.Unix(callTime, 0).Format("2006-01-02 15:04:05"), name, paramMap)
+	for k, v := range paramMap {
+		r = append(r, "key:"+k+"  value:"+v+"  ")
+	}
+	return
+}
 
-//func (this *batuThrift) CallBack(callTime int64, name string, paramMap map[string]string) (r []string, err error) {
-//	fmt.Println("-->from client Call:", time.Unix(callTime, 0).Format("2006-01-02 15:04:05"), name, paramMap)
-//	r = append(r, "key:"+paramMap["a"]+"    value:"+paramMap["b"])
-//	return
-//}
+func (this *batuThrift) CallBack(callTime int64, name string, paramMap map[string]string) (r []string, err error) {
+	fmt.Println("-->from client Call:", time.Unix(callTime, 0).Format("2006-01-02 15:04:05"), name, paramMap)
+	r = append(r, "key:"+paramMap["a"]+"    value:"+paramMap["b"])
+	return
+}
 
-//func (this *batuThrift) Put(s *demo.Article) (err error) {
-//	fmt.Println("Article--->id: %d\tTitle:%s\tContent:%t\tAuthor:%d\n", s.ID, s.Title, s.Content, s.Author)
-//	return nil
-//}
+func (this *batuThrift) Put(s *demo.Article) (err error) {
+	fmt.Println("Article--->id: %d\tTitle:%s\tContent:%t\tAuthor:%d\n", s.ID, s.Title, s.Content, s.Author)
+	return nil
+}
 
-//func (this *batuThrift) Process(s *demo.Article) (err error) {
-//	fmt.Println("Article--->id: %d\tTitle:%s\tContent:%t\tAuthor:%d\n", s.ID, s.Title, s.Content, s.Author)
-//	return nil
-//}
+func (this *batuThrift) Process(s *demo.Article) (err error) {
+	fmt.Println("Article--->id: %d\tTitle:%s\tContent:%t\tAuthor:%d\n", s.ID, s.Title, s.Content, s.Author)
+	return nil
+}
 
 func main() {
+
+	//get conf
+
 	transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
 	protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
 	//protocolFactory := thrift.NewTCompactProtocolFactory()
