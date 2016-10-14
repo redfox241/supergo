@@ -1,4 +1,4 @@
 package libs
 
-type batuThrift struct {
-}
+//type BatuThrift struct {
+//}

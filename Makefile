@@ -5,6 +5,6 @@ build:
 	go build  -o ./bin/go_client  ./client/go_client.go
 	go build  -o ./bin/go_server  ./service/go_server.go
 	cp -r  ./gen-php  ./clientphp/
-	cp -r  ./gen-go/batu  /Users/xiaojing/mygo/src/
+	cp -r  ./gen-go/batu  /Users/xiaojing/projectcode/src/
 	rm -rf gen-php gen-go
 
