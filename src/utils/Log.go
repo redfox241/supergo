@@ -6,91 +6,77 @@ import (
 	"os"
 )
 
-var strPathName string
+var strLogFileName, strPathName string
 
 func init() {
-	var strFileName = "/logs/server.log"
-	strPathName = getFileName(strFileName)
+
+	strLogFileName = createFolderExist("") + "/server.log"
+	strPathName = strLogFileName
 
 }
 
-func getFileName(filename string) string {
+func LogFatal(content ...interface{}) {
 
-	var strFilePath string
-	strFilePath, _ = os.Getwd()
-	return strFilePath + filename
+	appendToFile(strLogFileName, "FATAl", content)
 }
 
-func LogFatal(v ...interface{}) {
+func LogErr(content ...interface{}) {
 
-	log.Println(strPathName)
-	logfile, err := os.Create(strPathName)
+	appendToFile(strLogFileName, "ERROR", content)
+}
+
+func LogInfo(content ...interface{}) {
+	appendToFile(strLogFileName, "INFO", content)
+}
+
+func LogDebug(content ...interface{}) {
+
+	appendToFile(strLogFileName, "DEBUG", content)
+}
+
+func LogNotice(content ...interface{}) {
+	appendToFile(strLogFileName, "NOTICE", content)
+}
+
+/*
+ fileName:文件名字(带全路径)
+ content: 写入的内容
+*/
+func appendToFile(fileName string, logType string, content ...interface{}) error {
+
+	logfile, err := os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
 	defer logfile.Close()
 	if err != nil {
 		log.Fatalln("open file error !")
 	}
 
-	logger := log.New(logfile, "\r\n", log.Llongfile|log.Ldate|log.Ltime)
-	logger.SetPrefix("[Fatal]")
-	logger.Println(v...)
+	logger := log.New(logfile, "\r\n", log.LstdFlags|log.Llongfile)
+	logger.SetPrefix("[" + logType + "]")
+
+	logger.Println(content)
 	defer logfile.Close()
+
+	return err
 }
 
-func LogErr(v ...interface{}) {
+/*
+* 创建文件夹
+ */
+func createFolderExist(strFolder string) string {
 
-	log.Println(strPathName)
-	logfile, err := os.Create(strPathName)
-	defer logfile.Close()
-	if err != nil {
-		log.Fatalln("open file error !")
+	//设定文件夹默认值 logs
+	if len(strFolder) == 0 {
+		strFolder = "logs"
 	}
 
-	logger := log.New(logfile, "\r\n", log.Llongfile|log.Ldate|log.Ltime)
-	logger.SetPrefix("[Error]")
-	logger.Println(v...)
-	defer logfile.Close()
-}
+	var strNewPathName = strPathName + "../" + strFolder
 
-func Log(v ...interface{}) {
-
-	log.Println(strPathName)
-	logfile, err := os.Create(strPathName)
-	defer logfile.Close()
-	if err != nil {
-		log.Fatalln("open file error !")
+	if _, err := os.Stat(strNewPathName); os.IsNotExist(err) {
+		newerr := os.MkdirAll(strNewPathName, 0777)
+		if newerr != nil {
+		} else {
+			os.MkdirAll(strNewPathName, 0777)
+		}
 	}
-
-	logger := log.New(logfile, "\r\n", log.Ldate|log.Ltime)
-	logger.SetPrefix("[Info]")
-	logger.Println(v...)
-	defer logfile.Close()
-}
-
-func LogDebug(v ...interface{}) {
-	log.Println(strPathName)
-	logfile, err := os.Create(strPathName)
-	defer logfile.Close()
-	if err != nil {
-		log.Fatalln("open file error !")
-	}
-
-	logger := log.New(logfile, "\r\n", log.Ldate|log.Ltime)
-	logger.SetPrefix("[Debug]")
-	logger.Println(v...)
-	defer logfile.Close()
-}
-
-func LogNotice(v ...interface{}) {
-
-	log.Println(strPathName)
-	logfile, err := os.Create(strPathName)
-	defer logfile.Close()
-	if err != nil {
-		log.Fatalln("open file error !")
-	}
-
-	logger := log.New(logfile, "\r\n", log.Ldate|log.Ltime)
-	logger.SetPrefix("[NOTICE]")
-	logger.Println(v...)
-	defer logfile.Close()
+	return strNewPathName
 }

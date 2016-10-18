@@ -35,7 +35,7 @@ func main() {
 	}
 	defer transport.Close()
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 1; i++ {
 		paramMap := make(map[string]string)
 		paramMap["UserId"] = strconv.Itoa(10000 + i)
 		paramMap["UserName"] = "redfox241"

@@ -16,7 +16,7 @@ func GetYamlConfig(filePath string) map[interface{}]interface{} {
 	var strAppPath, strFileName string
 
 	strAppPath, _ = os.Getwd()
-	strFileName = strAppPath + filePath
+	strFileName = strAppPath + "/../" + filePath
 
 	data, err := ioutil.ReadFile(strFileName)
 

@@ -41,7 +41,7 @@ $client = new \user\user\UserClient($protocol);# 构造客户端
 $transport->open();
 $socket->setDebug(false);
 
-for($i=1;$i<11;$i++){
+for($i=1;$i<2;$i++){
     $item = array();
 
     $item["userId"] = 10000 + $i;
