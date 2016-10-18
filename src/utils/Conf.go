@@ -42,7 +42,6 @@ func GetElement(key string, themap map[interface{}]interface{}) string {
 
 func GetValuesByKey(key string, themap map[interface{}]interface{}) string {
 
-	fmt.Println(themap)
 	if value, ok := themap[key]; ok {
 
 		fmt.Println(value)
@@ -54,7 +53,7 @@ func GetValuesByKey(key string, themap map[interface{}]interface{}) string {
 }
 
 func getCurrentDirectory() string {
-	fmt.Println(os.Getenv(""))
+
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		log.Fatal(err)

@@ -1,13 +1,13 @@
 package main
 
 import (
-	"batu/demo"
 	"fmt"
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"net"
 	"os"
 	"strconv"
 	"time"
+	"user/user"
 )
 
 const (
@@ -28,7 +28,7 @@ func main() {
 	}
 
 	useTransport := transportFactory.GetTransport(transport)
-	client := demo.NewBatuThriftClientFactory(useTransport, protocolFactory)
+	client := user.NewUserClientFactory(useTransport, protocolFactory)
 	if err := transport.Open(); err != nil {
 		fmt.Fprintln(os.Stderr, "Error opening socket to "+HOST+":"+PORT, " ", err)
 		os.Exit(1)
@@ -37,17 +37,25 @@ func main() {
 
 	for i := 0; i < 10; i++ {
 		paramMap := make(map[string]string)
-		paramMap["name"] = "go_client"
-		paramMap["uid"] = "test" + strconv.Itoa(i+1)
+		paramMap["UserId"] = strconv.Itoa(10000 + i)
+		paramMap["UserName"] = "redfox241"
+		paramMap["NickName"] = "Alex"
+		paramMap["Intro"] = "like bird...."
+
 		r1, _ := client.GetUserInfo(time.Now().Unix(), "go client", paramMap)
 		fmt.Println("GOClient Call->", r1)
 	}
 
-	model := demo.Article{1, "Go第一篇文章", "我在这里", "liuxinming"}
-	client.Put(&model)
-
-	model1 := demo.Article{2, "Go第二篇文章", "我在这里", "liuxinming"}
-	client.Process(&model1)
+	model := user.UserInfo{
+		10000,
+		"redfox241",
+		"Alex",
+		"liuxinming",
+		"like bird....",
+		"19912341234",
+		"redfox241@sohu.com",
+	}
+	client.Process(&model)
 
 	endTime := currentTimeMillis()
 	fmt.Printf("本次调用用时:%d-%d=%d毫秒\n", endTime, startTime, (endTime - startTime))

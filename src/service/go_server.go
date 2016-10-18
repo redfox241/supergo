@@ -1,11 +1,11 @@
 package main
 
 import (
-	"batu/demo" //注意导入Thrift生成的接口包
 	"controllers"
 	"fmt"
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"os"
+	"user/user" //注意导入Thrift生成的接口包
 	"utils"
 )
 
@@ -32,8 +32,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	handler := controllers.GetBatuThrift()
-	processor := demo.NewBatuThriftProcessor(handler)
+	handler := controllers.GetUserThrift()
+	processor := user.NewUserProcessor(handler)
 
 	server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
 	fmt.Println("Starting the simple server on :", ip_addr+":"+port)
