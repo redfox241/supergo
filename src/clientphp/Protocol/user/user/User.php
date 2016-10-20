@@ -18,17 +18,15 @@ use Thrift\Exception\TApplicationException;
 
 interface UserIf {
   /**
-   * @param int $callTime
-   * @param string $name
    * @param array $paramMap
    * @return \user\user\UserInfo[]
    */
-  public function GetUserInfo($callTime, $name, array $paramMap);
+  public function GetUserInfo(array $paramMap);
   /**
-   * @param \user\user\UserInfo $newUser
+   * @param array $paramMap
    * @return int
    */
-  public function CreateNewUser(\user\user\UserInfo $newUser);
+  public function CreateNewUser(array $paramMap);
 }
 
 class UserClient implements \user\user\UserIf {
@@ -42,17 +40,15 @@ class UserClient implements \user\user\UserIf {
     $this->output_ = $output ? $output : $input;
   }
 
-  public function GetUserInfo($callTime, $name, array $paramMap)
+  public function GetUserInfo(array $paramMap)
   {
-    $this->send_GetUserInfo($callTime, $name, $paramMap);
+    $this->send_GetUserInfo($paramMap);
     return $this->recv_GetUserInfo();
   }
 
-  public function send_GetUserInfo($callTime, $name, array $paramMap)
+  public function send_GetUserInfo(array $paramMap)
   {
     $args = new \user\user\User_GetUserInfo_args();
-    $args->callTime = $callTime;
-    $args->name = $name;
     $args->paramMap = $paramMap;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -95,16 +91,16 @@ class UserClient implements \user\user\UserIf {
     throw new \Exception("GetUserInfo failed: unknown result");
   }
 
-  public function CreateNewUser(\user\user\UserInfo $newUser)
+  public function CreateNewUser(array $paramMap)
   {
-    $this->send_CreateNewUser($newUser);
+    $this->send_CreateNewUser($paramMap);
     return $this->recv_CreateNewUser();
   }
 
-  public function send_CreateNewUser(\user\user\UserInfo $newUser)
+  public function send_CreateNewUser(array $paramMap)
   {
     $args = new \user\user\User_CreateNewUser_args();
-    $args->newUser = $newUser;
+    $args->paramMap = $paramMap;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -154,14 +150,6 @@ class User_GetUserInfo_args {
   static $_TSPEC;
 
   /**
-   * @var int
-   */
-  public $callTime = null;
-  /**
-   * @var string
-   */
-  public $name = null;
-  /**
    * @var array
    */
   public $paramMap = null;
@@ -170,14 +158,6 @@ class User_GetUserInfo_args {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'callTime',
-          'type' => TType::I64,
-          ),
-        2 => array(
-          'var' => 'name',
-          'type' => TType::STRING,
-          ),
-        3 => array(
           'var' => 'paramMap',
           'type' => TType::MAP,
           'ktype' => TType::STRING,
@@ -192,12 +172,6 @@ class User_GetUserInfo_args {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['callTime'])) {
-        $this->callTime = $vals['callTime'];
-      }
-      if (isset($vals['name'])) {
-        $this->name = $vals['name'];
-      }
       if (isset($vals['paramMap'])) {
         $this->paramMap = $vals['paramMap'];
       }
@@ -224,20 +198,6 @@ class User_GetUserInfo_args {
       switch ($fid)
       {
         case 1:
-          if ($ftype == TType::I64) {
-            $xfer += $input->readI64($this->callTime);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->name);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
           if ($ftype == TType::MAP) {
             $this->paramMap = array();
             $_size0 = 0;
@@ -270,21 +230,11 @@ class User_GetUserInfo_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('User_GetUserInfo_args');
-    if ($this->callTime !== null) {
-      $xfer += $output->writeFieldBegin('callTime', TType::I64, 1);
-      $xfer += $output->writeI64($this->callTime);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->name !== null) {
-      $xfer += $output->writeFieldBegin('name', TType::STRING, 2);
-      $xfer += $output->writeString($this->name);
-      $xfer += $output->writeFieldEnd();
-    }
     if ($this->paramMap !== null) {
       if (!is_array($this->paramMap)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
       }
-      $xfer += $output->writeFieldBegin('paramMap', TType::MAP, 3);
+      $xfer += $output->writeFieldBegin('paramMap', TType::MAP, 1);
       {
         $output->writeMapBegin(TType::STRING, TType::STRING, count($this->paramMap));
         {
@@ -412,23 +362,30 @@ class User_CreateNewUser_args {
   static $_TSPEC;
 
   /**
-   * @var \user\user\UserInfo
+   * @var array
    */
-  public $newUser = null;
+  public $paramMap = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'newUser',
-          'type' => TType::STRUCT,
-          'class' => '\user\user\UserInfo',
+          'var' => 'paramMap',
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::STRING,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
+            'type' => TType::STRING,
+            ),
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['newUser'])) {
-        $this->newUser = $vals['newUser'];
+      if (isset($vals['paramMap'])) {
+        $this->paramMap = $vals['paramMap'];
       }
     }
   }
@@ -453,9 +410,21 @@ class User_CreateNewUser_args {
       switch ($fid)
       {
         case 1:
-          if ($ftype == TType::STRUCT) {
-            $this->newUser = new \user\user\UserInfo();
-            $xfer += $this->newUser->read($input);
+          if ($ftype == TType::MAP) {
+            $this->paramMap = array();
+            $_size16 = 0;
+            $_ktype17 = 0;
+            $_vtype18 = 0;
+            $xfer += $input->readMapBegin($_ktype17, $_vtype18, $_size16);
+            for ($_i20 = 0; $_i20 < $_size16; ++$_i20)
+            {
+              $key21 = '';
+              $val22 = '';
+              $xfer += $input->readString($key21);
+              $xfer += $input->readString($val22);
+              $this->paramMap[$key21] = $val22;
+            }
+            $xfer += $input->readMapEnd();
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -473,12 +442,22 @@ class User_CreateNewUser_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('User_CreateNewUser_args');
-    if ($this->newUser !== null) {
-      if (!is_object($this->newUser)) {
+    if ($this->paramMap !== null) {
+      if (!is_array($this->paramMap)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
       }
-      $xfer += $output->writeFieldBegin('newUser', TType::STRUCT, 1);
-      $xfer += $this->newUser->write($output);
+      $xfer += $output->writeFieldBegin('paramMap', TType::MAP, 1);
+      {
+        $output->writeMapBegin(TType::STRING, TType::STRING, count($this->paramMap));
+        {
+          foreach ($this->paramMap as $kiter23 => $viter24)
+          {
+            $xfer += $output->writeString($kiter23);
+            $xfer += $output->writeString($viter24);
+          }
+        }
+        $output->writeMapEnd();
+      }
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

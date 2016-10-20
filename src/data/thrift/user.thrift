@@ -22,6 +22,6 @@ struct UserInfo{
 * service定义
 */
 service User {
-    list<UserInfo> GetUserInfo(1:i64 callTime, 2:string name, 3:map<string, string> paramMap),
-	i64 CreateNewUser(1: UserInfo newUser),
+    list<UserInfo> GetUserInfo(1:map<string, string> paramMap),
+	i64 CreateNewUser(1: map<string,string> paramMap),
 }

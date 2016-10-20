@@ -52,16 +52,24 @@ Class Rpc {
         $transport->open();
         $socket->setDebug(true);
 
-//       $s = new \user\user\UserInfo();
+       $arrResult = $client->$method($paramslist);
 
-       $arrResult = $client->$method(time(),"php client",$paramslist);
-       return $arrResult;
+       if( is_array($arrResult) && !empty($arrResult)){
+
+           foreach ( $arrResult as  &$item  ){
+               if(is_object($item)){
+                   $item = (array) $item;
+               }
+           }
+       }
 
         $endTime = self::_getMillisecond();
 
         echo "本次调用用时: :".$endTime."-".$startTime."=".($endTime-$startTime)."毫秒<br>\n";
 
         $transport->close();
+
+       return $arrResult;
     }
 
     static private function _getMillisecond() {
@@ -72,7 +80,18 @@ Class Rpc {
 }
 
 
-$arrUserInfo["user_id"] = 8;
+$arrNewUserInfo = [
+    "user_id" => "0",
+    "user_name" => "张飞",
+    "nick_name" => "张翼德",
+    "intro" => "燕人张飞在此",
+];
+
+$arrRes = Rpc::call("user","CreateNewUser",$arrNewUserInfo);
+
+var_dump( $arrRes );
+
+$arrUserInfo["user_id"] = $arrRes;
 
 $arrRes = Rpc::call("user","GetUserInfo",$arrUserInfo);
 

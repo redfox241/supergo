@@ -35,13 +35,20 @@ func main() {
 	}
 	defer transport.Close()
 
-	model := user.UserInfo{
-		100,
-		"诸葛亮",
-		"孔明",
-		"鞠躬尽瘁，死而后已",
-	}
-	intNewUserId, _ := client.CreateNewUser(&model)
+	//	model := user.UserInfo{
+	//		100,
+	//		"诸葛亮",
+	//		"孔明",
+	//		"鞠躬尽瘁，死而后已",
+	//	}
+
+	model := make(map[string]string)
+	model["user_id"] = "1000"
+	model["user_name"] = "诸葛亮"
+	model["nick_name"] = "孔明"
+	model["intro"] = "我夜观天象"
+
+	intNewUserId, _ := client.CreateNewUser(model)
 
 	fmt.Println("new_user_id : ", intNewUserId)
 
@@ -49,7 +56,7 @@ func main() {
 		paramMap := make(map[string]string)
 		paramMap["user_id"] = strconv.FormatInt(intNewUserId, 10)
 
-		userInfo, _ := client.GetUserInfo(time.Now().Unix(), "go client", paramMap)
+		userInfo, _ := client.GetUserInfo(paramMap)
 		fmt.Println("GOClient Call->", userInfo)
 	}
 

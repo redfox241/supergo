@@ -3,7 +3,6 @@ package controllers
 import (
 	"models"
 	"strconv"
-	"time"
 	"user/user"
 	"utils"
 )
@@ -15,7 +14,7 @@ func GetUserThrift() *userThrift {
 	return &userThrift{}
 }
 
-func (this *userThrift) GetUserInfo(callTime int64, name string, paramMap map[string]string) ([]*user.UserInfo, error) {
+func (this *userThrift) GetUserInfo(paramMap map[string]string) ([]*user.UserInfo, error) {
 
 	var err error
 
@@ -23,19 +22,19 @@ func (this *userThrift) GetUserInfo(callTime int64, name string, paramMap map[st
 	newUser := make([]*user.UserInfo, 0)
 	newUser, err = models.GetUserInfo(intUserId)
 
-	utils.LogErr("-->from client Call:", time.Unix(callTime, 0).Format("2006-01-02 15:04:05"), name, paramMap)
+	utils.LogErr("-->from client Call:", paramMap)
 	utils.LogNotice("finish to get user info.")
 
 	return newUser, err
 }
 
-func (this *userThrift) CreateNewUser(newUser *user.UserInfo) (int64, error) {
+func (this *userThrift) CreateNewUser(paramMap map[string]string) (int64, error) {
 
 	userinfo := make(map[string]string)
 	userinfo["user_id"] = "0"
-	userinfo["user_name"] = newUser.UserName
-	userinfo["nick_name"] = newUser.NickName
-	userinfo["intro"] = newUser.Intro
+	userinfo["user_name"] = paramMap["user_name"]
+	userinfo["nick_name"] = paramMap["nick_name"]
+	userinfo["intro"] = paramMap["intro"]
 
 	newUserId, intAffects, err := models.CreateNewUser(userinfo)
 	if intAffects > 0 {
