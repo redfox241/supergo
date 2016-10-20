@@ -35,27 +35,23 @@ func main() {
 	}
 	defer transport.Close()
 
+	model := user.UserInfo{
+		100,
+		"诸葛亮",
+		"孔明",
+		"鞠躬尽瘁，死而后已",
+	}
+	intNewUserId, _ := client.CreateNewUser(&model)
+
+	fmt.Println("new_user_id : ", intNewUserId)
+
 	for i := 0; i < 1; i++ {
 		paramMap := make(map[string]string)
-		paramMap["UserId"] = strconv.Itoa(10000 + i)
-		paramMap["UserName"] = "redfox241"
-		paramMap["NickName"] = "Alex"
-		paramMap["Intro"] = "like bird...."
+		paramMap["user_id"] = strconv.FormatInt(intNewUserId, 10)
 
-		r1, _ := client.GetUserInfo(time.Now().Unix(), "go client", paramMap)
-		fmt.Println("GOClient Call->", r1)
+		userInfo, _ := client.GetUserInfo(time.Now().Unix(), "go client", paramMap)
+		fmt.Println("GOClient Call->", userInfo)
 	}
-
-	model := user.UserInfo{
-		10000,
-		"redfox241",
-		"Alex",
-		"liuxinming",
-		"like bird....",
-		"19912341234",
-		"redfox241@sohu.com",
-	}
-	client.Process(&model)
 
 	endTime := currentTimeMillis()
 	fmt.Printf("本次调用用时:%d-%d=%d毫秒\n", endTime, startTime, (endTime - startTime))

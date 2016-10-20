@@ -74,7 +74,6 @@ func createFolderExist(strFolder string) string {
 	if _, err := os.Stat(strNewPathName); os.IsNotExist(err) {
 		newerr := os.MkdirAll(strNewPathName, 0777)
 		if newerr != nil {
-		} else {
 			os.MkdirAll(strNewPathName, 0777)
 		}
 	}

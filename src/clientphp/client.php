@@ -9,7 +9,7 @@ header("Content-type: text/html; charset=utf-8");
 $startTime = getMillisecond();//记录开始时间
 
 $ROOT_DIR = realpath(dirname(__FILE__).'/');
-$GEN_DIR = realpath(dirname(__FILE__).'/').'/gen-php';
+$GEN_DIR = realpath(dirname(__FILE__).'/').'/Protocol';
 require_once $ROOT_DIR . '/Thrift/ClassLoader/ThriftClassLoader.php';
 
 use Thrift\ClassLoader\ThriftClassLoader;
@@ -39,28 +39,32 @@ $protocol = new TBinaryProtocol($transport);  #传输格式：二进制格式
 $client = new \user\user\UserClient($protocol);# 构造客户端
 
 $transport->open();
-$socket->setDebug(false);
+$socket->setDebug(true);
+
+$s = new \user\user\UserInfo();
+
+$s->user_id = 2;
+$s->user_name = '曹操';
+$s->nick_name = '曹孟德';
+$s->intro = '宁愿天下人负吾，我不负天下人';
+$arrResult = $client->CreateNewUser($s);
+var_dump( $arrResult );
+
 
 for($i=1;$i<2;$i++){
     $item = array();
 
-    $item["userId"] = 10000 + $i;
-	$item["userName"] = "redfox241";
-	$item["nickName"] = "Alex";
+    $item["user_id"] = intval($arrResult);
+	$item["user_name"] = "redfox241";
+	$item["nick_name"] = "Alex";
 	$item["intro"] = "like bird ....";
 
     $result = $client->GetUserInfo(time(),"php client",$item); # 对服务器发起rpc调用
-    var_dump( "PHPClient Call->".implode('',$result)."<br>" );
+	$arrUserInfo = (array)( $result[0]) ;
 
+	var_dump( $arrUserInfo );
 }
 
-$s = new \user\user\UserInfo();
-
-$s->userId = 2;
-$s->userName = 'redfox241';
-$s->nickName = '我就是这篇文章内容';
-$s->intro = 'like bird....';
-$client->process($s);
 
 $endTime = getMillisecond();
 

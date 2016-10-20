@@ -21,13 +21,14 @@ interface UserIf {
    * @param int $callTime
    * @param string $name
    * @param array $paramMap
-   * @return string[]
+   * @return \user\user\UserInfo[]
    */
   public function GetUserInfo($callTime, $name, array $paramMap);
   /**
    * @param \user\user\UserInfo $newUser
+   * @return int
    */
-  public function Process(\user\user\UserInfo $newUser);
+  public function CreateNewUser(\user\user\UserInfo $newUser);
 }
 
 class UserClient implements \user\user\UserIf {
@@ -94,34 +95,34 @@ class UserClient implements \user\user\UserIf {
     throw new \Exception("GetUserInfo failed: unknown result");
   }
 
-  public function Process(\user\user\UserInfo $newUser)
+  public function CreateNewUser(\user\user\UserInfo $newUser)
   {
-    $this->send_Process($newUser);
-    $this->recv_Process();
+    $this->send_CreateNewUser($newUser);
+    return $this->recv_CreateNewUser();
   }
 
-  public function send_Process(\user\user\UserInfo $newUser)
+  public function send_CreateNewUser(\user\user\UserInfo $newUser)
   {
-    $args = new \user\user\User_Process_args();
+    $args = new \user\user\User_CreateNewUser_args();
     $args->newUser = $newUser;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'Process', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'CreateNewUser', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('Process', TMessageType::CALL, $this->seqid_);
+      $this->output_->writeMessageBegin('CreateNewUser', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
 
-  public function recv_Process()
+  public function recv_CreateNewUser()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\user\user\User_Process_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\user\user\User_CreateNewUser_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -135,11 +136,14 @@ class UserClient implements \user\user\UserIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \user\user\User_Process_result();
+      $result = new \user\user\User_CreateNewUser_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
-    return;
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("CreateNewUser failed: unknown result");
   }
 
 }
@@ -305,7 +309,7 @@ class User_GetUserInfo_result {
   static $_TSPEC;
 
   /**
-   * @var string[]
+   * @var \user\user\UserInfo[]
    */
   public $success = null;
 
@@ -315,9 +319,10 @@ class User_GetUserInfo_result {
         0 => array(
           'var' => 'success',
           'type' => TType::LST,
-          'etype' => TType::STRING,
+          'etype' => TType::STRUCT,
           'elem' => array(
-            'type' => TType::STRING,
+            'type' => TType::STRUCT,
+            'class' => '\user\user\UserInfo',
             ),
           ),
         );
@@ -357,7 +362,8 @@ class User_GetUserInfo_result {
             for ($_i13 = 0; $_i13 < $_size9; ++$_i13)
             {
               $elem14 = null;
-              $xfer += $input->readString($elem14);
+              $elem14 = new \user\user\UserInfo();
+              $xfer += $elem14->read($input);
               $this->success []= $elem14;
             }
             $xfer += $input->readListEnd();
@@ -384,11 +390,11 @@ class User_GetUserInfo_result {
       }
       $xfer += $output->writeFieldBegin('success', TType::LST, 0);
       {
-        $output->writeListBegin(TType::STRING, count($this->success));
+        $output->writeListBegin(TType::STRUCT, count($this->success));
         {
           foreach ($this->success as $iter15)
           {
-            $xfer += $output->writeString($iter15);
+            $xfer += $iter15->write($output);
           }
         }
         $output->writeListEnd();
@@ -402,7 +408,7 @@ class User_GetUserInfo_result {
 
 }
 
-class User_Process_args {
+class User_CreateNewUser_args {
   static $_TSPEC;
 
   /**
@@ -428,7 +434,7 @@ class User_Process_args {
   }
 
   public function getName() {
-    return 'User_Process_args';
+    return 'User_CreateNewUser_args';
   }
 
   public function read($input)
@@ -466,7 +472,7 @@ class User_Process_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('User_Process_args');
+    $xfer += $output->writeStructBegin('User_CreateNewUser_args');
     if ($this->newUser !== null) {
       if (!is_object($this->newUser)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
@@ -482,19 +488,32 @@ class User_Process_args {
 
 }
 
-class User_Process_result {
+class User_CreateNewUser_result {
   static $_TSPEC;
 
+  /**
+   * @var int
+   */
+  public $success = null;
 
-  public function __construct() {
+  public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::I64,
+          ),
         );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
     }
   }
 
   public function getName() {
-    return 'User_Process_result';
+    return 'User_CreateNewUser_result';
   }
 
   public function read($input)
@@ -512,6 +531,13 @@ class User_Process_result {
       }
       switch ($fid)
       {
+        case 0:
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->success);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -524,7 +550,12 @@ class User_Process_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('User_Process_result');
+    $xfer += $output->writeStructBegin('User_CreateNewUser_result');
+    if ($this->success !== null) {
+      $xfer += $output->writeFieldBegin('success', TType::I64, 0);
+      $xfer += $output->writeI64($this->success);
+      $xfer += $output->writeFieldEnd();
+    }
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
