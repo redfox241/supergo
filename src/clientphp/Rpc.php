@@ -45,8 +45,7 @@ Class Rpc {
         $transport = new TFramedTransport($socket); #传输方式：这个要和服务器使用的一致[go提供后端服务,迭代10000次1.9 ~ 2.1s完成，比TBuffer快了点]
         $protocol = new TBinaryProtocol($transport);  #传输格式：二进制格式
        $ClassClient =  "\\".$servicename."\\".$servicename."\\".ucwords($servicename)."Client";
-
-       //$client = new \user\user\UserClient($protocol);# 构造客户端
+       
        $client = new $ClassClient($protocol);
 
         $transport->open();
