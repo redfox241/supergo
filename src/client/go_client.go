@@ -5,7 +5,7 @@ import (
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"net"
 	"os"
-	"strconv"
+	//"strconv"
 	"time"
 	"user/user"
 )
@@ -54,10 +54,18 @@ func main() {
 
 	for i := 0; i < 1; i++ {
 		paramMap := make(map[string]string)
-		paramMap["user_id"] = strconv.FormatInt(intNewUserId, 10)
 
-		userInfo, _ := client.GetUserInfo(paramMap)
+		//paramMap["user_id"] = strconv.FormatInt(intNewUserId, 10)
+		//userInfo, _ := client.GetUserInfo(paramMap)
+
+		paramMap["last_id"] = "0"
+		userInfo, _ := client.GetUserList(paramMap)
 		fmt.Println("GOClient Call->", userInfo)
+
+		for k, v := range userInfo {
+			fmt.Println(k)
+			fmt.Println(v)
+		}
 	}
 
 	endTime := currentTimeMillis()

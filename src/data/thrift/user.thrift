@@ -12,10 +12,10 @@ namespace php user.user
  * 结构体定义
  */
 struct UserInfo{
-	1: i64 user_id,
-    2: string user_name,
-    3: string nick_name,
-	4: string intro,
+	1:  i64 user_id,
+    2:  string user_name,
+    3:  string nick_name,
+	4:  string intro,
 }
 
 /*
@@ -23,5 +23,6 @@ struct UserInfo{
 */
 service User {
     list<UserInfo> GetUserInfo(1:map<string, string> paramMap),
+	list<UserInfo> GetUserList(1:map<string, string> paramMap),
 	i64 CreateNewUser(1: map<string,string> paramMap),
 }

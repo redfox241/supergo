@@ -70,7 +70,7 @@ func init() {
 
 	var err error
 	strConnect := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", user, passwd, ipaddr, port, db_name, db_charset)
-	fmt.Println(strConnect)
+	//fmt.Println(strConnect)
 	engine, err = xorm.NewEngine(db_driver, strConnect)
 	engine.ShowSQL(true)
 
@@ -86,45 +86,66 @@ func init() {
 
 func GetUserInfo(userId int) ([]*user.UserInfo, error) {
 
-	userInfo := make([]*user.UserInfo, 0)
-	errmu := engine.Sql("select * from user where user_id = ? ", userId).Find(&userInfo)
+	newUser := make([]User, 0)
+	errmu := engine.Sql("select * from user where user_id = ? ", userId).Find(&newUser)
+	//errmu := engine.Table("user").In("user_id", 200, 201, 202).Find(&newUser)
 
 	if errmu != nil {
 		utils.LogErr("failed to get User info, input_param:%s", errmu)
 	}
 
-	fmt.Println(userInfo)
+	userList := make([]*user.UserInfo, len(newUser))
 
-	return userInfo, errmu
+	for k, v := range newUser {
+		userInfo := new(user.UserInfo)
+		userInfo.UserID = v.User_id
+		userInfo.UserName = v.User_name
+		userInfo.NickName = v.Nick_name
+		userInfo.Intro = v.Intro
+		userList[k] = userInfo
+
+		userInfo = nil
+
+	}
+
+	return userList, errmu
 }
 
 /**
 *获取用户list,支持下拉分页
  */
-func GetUserList(lastId int) ([]user.UserInfo, error) {
+func GetUserList(lastId int) ([]*user.UserInfo, error) {
 
-	userList := make([]user.UserInfo, 0)
+	newUser := make([]User, 0)
 
-	var strSqlCmd, strSqlCmdPrefix string
-	strSqlCmdPrefix = "select * from user "
+	var strSqlCmd string
 
 	if lastId > 0 {
-		strSqlCmd = fmt.Sprintf(strSqlCmdPrefix+" where user_id > %d ", lastId)
+		strSqlCmd = fmt.Sprintf(" select * from user  where user_id < %d order by user_id desc limit 20", lastId)
 
 	} else {
-		strSqlCmd = strSqlCmd
+		strSqlCmd = fmt.Sprintf(" select * from user  order by user_id desc limit 20")
 	}
 
 	utils.LogDebug(strSqlCmd)
-	err := engine.Sql(strSqlCmd).Find(&userList)
+	err := engine.Sql(strSqlCmd).Find(&newUser)
 	//errmn := engine.AllCols().In("id", 5, 6, 7).Find(&user)
 
 	if err != nil {
 		utils.LogErr(fmt.Printf("failed to get data info from mysql.error:%s", err))
 	}
-	for _, val := range userList {
-		//fmt.Println(key)
-		fmt.Println(val)
+
+	userList := make([]*user.UserInfo, len(newUser))
+	for key, val := range newUser {
+
+		userInfo := new(user.UserInfo)
+		userInfo.UserID = val.User_id
+		userInfo.UserName = val.User_name
+		userInfo.NickName = val.Nick_name
+		userInfo.Intro = val.Intro
+		userList[key] = userInfo
+
+		userInfo = nil
 	}
 
 	return userList, err
@@ -136,7 +157,7 @@ func GetUserList(lastId int) ([]user.UserInfo, error) {
 func CreateNewUser(paramMap map[string]string) (int64, int64, error) {
 
 	user := new(User)
-	user.User_id = 0
+	//user.User_id = 0
 	user.User_name = paramMap["user_name"]
 	user.Nick_name = paramMap["nick_name"]
 	user.Intro = paramMap["intro"]

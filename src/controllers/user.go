@@ -28,6 +28,20 @@ func (this *userThrift) GetUserInfo(paramMap map[string]string) ([]*user.UserInf
 	return newUser, err
 }
 
+func (this *userThrift) GetUserList(paramMap map[string]string) ([]*user.UserInfo, error) {
+
+	var err error
+
+	intLastId, _ := strconv.Atoi(paramMap["last_id"])
+	newUser := make([]*user.UserInfo, 0)
+	newUser, err = models.GetUserList(intLastId)
+
+	utils.LogErr("-->from client Call:", paramMap)
+	utils.LogNotice("finish to get user info.")
+
+	return newUser, err
+}
+
 func (this *userThrift) CreateNewUser(paramMap map[string]string) (int64, error) {
 
 	userinfo := make(map[string]string)
