@@ -1,3 +1,17 @@
+/***************************************************************************
+ *
+ * Copyright (c) 2016 primedu.com, Inc. All Rights Reserved
+ *
+ **************************************************************************/
+
+/**
+ * @file models user.go
+ * @author bugushe@gmail.com
+ * @date 2016-10-15 13:50:37
+ * @brief
+ *
+ **/
+
 package models
 
 import (
@@ -52,32 +66,12 @@ type User struct {
 }
 
 /**
-* 初始化方法
- */
+ * 初始化方法
+ **/
 func init() {
 
-	//get conf
-	appConfig := make(map[interface{}]interface{})
-	appConfig = utils.GetYamlConfig(APP_CONFIG)
-
-	db_driver := utils.GetElement("db_driver", appConfig)
-	db_name := utils.GetElement("db_name", appConfig)
-	user := utils.GetElement("user", appConfig)
-	passwd := utils.GetElement("passwd", appConfig)
-	ipaddr := utils.GetElement("ip_addr", appConfig)
-	port := utils.GetElement("port", appConfig)
-	db_charset := utils.GetElement("charset", appConfig)
-
-	var err error
-	strConnect := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", user, passwd, ipaddr, port, db_name, db_charset)
-	//fmt.Println(strConnect)
-	engine, err = xorm.NewEngine(db_driver, strConnect)
-	engine.ShowSQL(true)
-
-	if err != nil {
-		utils.LogErr(fmt.Printf("failed to connect mysql.error:%s", err))
-	}
-
+	//初始化数据库连接
+	engine, _ = utils.GetDB()
 }
 
 /**
@@ -103,9 +97,7 @@ func GetUserInfo(userId int) ([]*user.UserInfo, error) {
 		userInfo.NickName = v.Nick_name
 		userInfo.Intro = v.Intro
 		userList[k] = userInfo
-
 		userInfo = nil
-
 	}
 
 	return userList, errmu

@@ -25,4 +25,5 @@ service User {
     list<UserInfo> GetUserInfo(1:map<string, string> paramMap),
 	list<UserInfo> GetUserList(1:map<string, string> paramMap),
 	i64 CreateNewUser(1: map<string,string> paramMap),
+    list<UserInfo> GetUserInfoByUserId(1:map<string, string> paramMap),
 }

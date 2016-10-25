@@ -1,3 +1,17 @@
+/***************************************************************************
+ *
+ * Copyright (c) 2016 primedu.com, Inc. All Rights Reserved
+ *
+ **************************************************************************/
+
+/**
+ * @file main
+ * @author bugushe@gmail.com
+ * @date 2016-10-15 13:50:37
+ * @brief
+ *
+ **/
+
 package main
 
 import (
@@ -36,7 +50,7 @@ func main() {
 	processor := user.NewUserProcessor(handler)
 
 	server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
-	fmt.Println("Starting the simple server on :", ip_addr+":"+port)
+	utils.LogDebug("Starting the simple server on :", ip_addr+":"+port)
 	server.Serve()
 
 }

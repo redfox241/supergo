@@ -1,3 +1,17 @@
+/***************************************************************************
+ *
+ * Copyright (c) 2016 primedu.com, Inc. All Rights Reserved
+ *
+ **************************************************************************/
+
+/**
+ * @file user.go
+ * @author bugushe@gmail.com
+ * @date 2016-10-15 13:50:37
+ * @brief
+ *
+ **/
+
 package controllers
 
 import (
@@ -12,6 +26,20 @@ type userThrift struct {
 
 func GetUserThrift() *userThrift {
 	return &userThrift{}
+}
+
+func (this *userThrift) GetUserInfoByUserId(paramMap map[string]string) ([]*user.UserInfo, error) {
+
+	var err error
+
+	intUserId, _ := strconv.Atoi(paramMap["user_id"])
+	newUser := make([]*user.UserInfo, 0)
+	newUser, err = models.GetUserInfo(intUserId)
+
+	utils.LogErr("-->from client Call:", paramMap)
+	utils.LogNotice("finish to get user info.")
+
+	return newUser, err
 }
 
 func (this *userThrift) GetUserInfo(paramMap map[string]string) ([]*user.UserInfo, error) {

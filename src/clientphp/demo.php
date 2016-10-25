@@ -16,7 +16,8 @@ var_dump( $arrRes );
 
 $arrUserInfo["user_id"] = $arrRes;
 
-$arrRes = Rpc::call("user","GetUserInfo",$arrUserInfo);
+#$arrRes = Rpc::call("user","GetUserInfo",$arrUserInfo);
+$arrRes = Rpc::call("user","GetUserInfoByUserId",$arrUserInfo);
 
 var_dump( $arrRes );
 

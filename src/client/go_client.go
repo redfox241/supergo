@@ -58,7 +58,7 @@ func main() {
 		//paramMap["user_id"] = strconv.FormatInt(intNewUserId, 10)
 		//userInfo, _ := client.GetUserInfo(paramMap)
 
-		paramMap["last_id"] = "0"
+		paramMap["last_id"] = "20"
 		userInfo, _ := client.GetUserList(paramMap)
 		fmt.Println("GOClient Call->", userInfo)
 

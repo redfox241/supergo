@@ -1,4 +1,16 @@
-// Log.go
+/***************************************************************************
+ *
+ * Copyright (c) 2016 primedu.com, Inc. All Rights Reserved
+ *
+ **************************************************************************/
+
+/**
+ * @file utils log.go
+ * @author bugushe@gmail.com
+ * @date 2016-10-15 13:50:37
+ * @brief
+ *
+ **/
 package utils
 
 import (
@@ -54,6 +66,7 @@ func appendToFile(fileName string, logType string, content ...interface{}) error
 	logger.SetPrefix("[" + logType + "]")
 
 	logger.Println(content)
+
 	defer logfile.Close()
 
 	return err
@@ -69,7 +82,7 @@ func createFolderExist(strFolder string) string {
 		strFolder = "logs"
 	}
 
-	var strNewPathName = strPathName + "../" + strFolder
+	var strNewPathName = getParentDirectory(getCurrentDirectory()) + "/" + strFolder
 
 	if _, err := os.Stat(strNewPathName); os.IsNotExist(err) {
 		newerr := os.MkdirAll(strNewPathName, 0777)
