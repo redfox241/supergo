@@ -30,17 +30,15 @@ const (
 func main() {
 
 	//get conf
-	appConfig := make(map[interface{}]interface{})
-	appConfig = utils.GetYamlConfig(APP_CONFIG)
-
-	ip_addr := utils.GetElement("ip_addr", appConfig)
-	port := utils.GetElement("port", appConfig)
+	utils.SetConfInfo(APP_CONFIG)
+	ip_addr := utils.GetValuesByKeys("server_setting","ip_addr").(string)
+	port := utils.GetValuesByKeys("server_setting","port").(string)
 
 	transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
 	protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
 	//protocolFactory := thrift.NewTCompactProtocolFactory()
 
-	serverTransport, err := thrift.NewTServerSocket(ip_addr + ":" + port)
+	serverTransport, err := thrift.NewTServerSocket(ip_addr+":"+port)
 	if err != nil {
 		fmt.Println("Error!", err)
 		os.Exit(1)

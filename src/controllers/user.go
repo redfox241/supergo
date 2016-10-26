@@ -45,7 +45,7 @@ func (this *userThrift) GetUserInfoByUserId(paramMap map[string]string) ([]*user
 func (this *userThrift) GetUserInfo(paramMap map[string]string) ([]*user.UserInfo, error) {
 
 	var err error
-
+	
 	intUserId, _ := strconv.Atoi(paramMap["user_id"])
 	newUser := make([]*user.UserInfo, 0)
 	newUser, err = models.GetUserInfo(intUserId)
@@ -77,7 +77,7 @@ func (this *userThrift) CreateNewUser(paramMap map[string]string) (int64, error)
 	userinfo["user_name"] = paramMap["user_name"]
 	userinfo["nick_name"] = paramMap["nick_name"]
 	userinfo["intro"] = paramMap["intro"]
-
+	
 	newUserId, intAffects, err := models.CreateNewUser(userinfo)
 	if intAffects > 0 {
 		return newUserId, err

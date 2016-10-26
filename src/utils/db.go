@@ -22,7 +22,7 @@ import (
 var dbconnect *Engine
 
 const (
-	APP_CONFIG = "/conf/db.conf"
+	DB_CONFIG = "/conf/db.conf"
 )
 
 func GetDB() (*Engine, error) {
@@ -35,16 +35,14 @@ func GetDB() (*Engine, error) {
 	}
 
 	//get conf
-	appConfig := make(map[interface{}]interface{})
-	appConfig = GetYamlConfig(APP_CONFIG)
-
-	db_driver := GetElement("db_driver", appConfig)
-	db_name := GetElement("db_name", appConfig)
-	user := GetElement("user", appConfig)
-	passwd := GetElement("passwd", appConfig)
-	ipaddr := GetElement("ip_addr", appConfig)
-	port := GetElement("port", appConfig)
-	db_charset := GetElement("charset", appConfig)
+	SetConfInfo(DB_CONFIG)
+	db_driver := GetValuesByKeys("db_driver").(string)
+	db_name := GetValuesByKeys("db_name").(string)
+	user := GetValuesByKeys("user").(string)
+	passwd := GetValuesByKeys("passwd").(string)
+	ipaddr := GetValuesByKeys("ip_addr").(string)
+	port := GetValuesByKeys("port").(string)
+	db_charset := GetValuesByKeys("charset").(string)
 
 	var err error
 	strConnect := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", user, passwd, ipaddr, port, db_name, db_charset)
