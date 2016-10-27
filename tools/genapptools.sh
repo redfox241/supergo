@@ -1,28 +1,33 @@
 appname=$1
+
+output="./output"
+datapath="../data"
+gopath="/Users/xiaojing/projectcode/src/"
+
 echo "生成 "$appname" 模块基本开发框架"
 
 ##判断是否存在output,不存在，创建output
-if [ ! -d "./output" ]; then
-    mkdir -p output
+if [ ! -d $output ]; then
+    mkdir -p $output
 fi
 
-if [ ! -d "./output/$appname" ]; then
-    mkdir -p ./output/$appname
-else
-    rm -rf ./output/$appname/*
+if [ ! -d "$output/$appname" ]; then
+    mkdir -p $output/$appname
 fi
 
-## copy source code
-cp -r  ../src  ./output/$appname
+## copy source code,为支持多次调整thrift数据修改的，源码支持增量调整
+if [ ! -d "$output/$appname/src" ];then
+    cp -r  ../src  $output/$appname/
+fi
 
 ## 生成thrift文件
-cd ./output/
+cd $output
 
-thrift -r --gen go ../data/thrift/$appname.thrift
-thrift -r --gen php ../data/thrift/$appname.thrift
+thrift -r --gen go $datapath/thrift/$appname.thrift
+thrift -r --gen php $datapath/thrift/$appname.thrift
 
 
-cp -r  ./gen-go/$appname  /Users/xiaojing/projectcode/src/
+cp -r  ./gen-go/$appname  $gopath
 cp -r  ./gen-php/*  ./$appname/src/clientphp/Protocol/
 
 

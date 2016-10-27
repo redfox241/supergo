@@ -49,8 +49,7 @@ supergo 一个基于thrift的golang研发框架，支持go+go，php+go应用
 					|	routers     
 					|	service     
 					|	utils
-	
-
+		*注意：支持根据thrift文件，多次生成demo，已经存在的code不受影响，支持增量
 		
 	  3、编译
 		make 

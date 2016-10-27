@@ -22,4 +22,5 @@ struct DemoInfo{
 service Demo {
     list<DemoInfo> GetDemoInfo(1:map<string, string> paramMap),
 	i64 ProcessDemo(1: map<string,string> paramMap),
+	i64 DoDemo(1: map<string,string> paramMap),
 }
