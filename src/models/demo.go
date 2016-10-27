@@ -31,7 +31,7 @@ const (
 
 type Demo struct {
 	Demo_id   int64  `xorm:"demo_id pk autoincr"`
-	Demo_name string `xorm:"demo_name"`
+	Demo_name string `xorm:"demo_name varchar(100) not null"`
 
 }
 
@@ -77,6 +77,11 @@ func GetDemoInfo(demoId int) ([]*demo.DemoInfo, error) {
 * 新创建用户
  */
 func CreateNewDemo(paramMap map[string]string) (int64, int64, error) {
+	
+	err := engine.Sync2(new(Demo))
+	if err != nil{
+		
+	}
 
 	demo := new(Demo)
 	demo.Demo_name = paramMap["demo_name"]

@@ -27,5 +27,4 @@ struct FooInfo{
 service Demo {
     list<DemoInfo> GetDemoInfo(1:map<string, string> paramMap),
 	i64 ProcessDemo(1: map<string,string> paramMap),
-	i64 DoFoo(1: map<string,string> paramMap),
 }
