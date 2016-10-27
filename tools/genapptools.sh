@@ -23,8 +23,8 @@ fi
 ## 生成thrift文件
 cd $output
 
-thrift -r --gen go $datapath/thrift/$appname.thrift
-thrift -r --gen php $datapath/thrift/$appname.thrift
+thrift -r --gen go $datapath/$appname/$appname.thrift
+thrift -r --gen php $datapath/$appname/$appname.thrift
 
 
 cp -r  ./gen-go/$appname  $gopath
