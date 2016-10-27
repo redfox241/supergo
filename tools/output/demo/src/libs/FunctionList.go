@@ -1,5 +1,0 @@
-package libs
-
-import (
-	"fmt"
-)
