@@ -67,9 +67,7 @@ func appendToFile(fileName string, logType string, content ...interface{}) error
 	logger.SetPrefix("[" + logType + "]")
 
 	logger.Println(content)
-
-	defer logfile.Close()
-
+	
 	return err
 }
 
